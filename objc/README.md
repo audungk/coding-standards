@@ -40,6 +40,7 @@ Here are some of the documents from Apple that informed the style guide. If some
 * [Booleans](#booleans)
 * [Singletons](#singletons)
 * [Architecture](#architecture)
+* [Storyboards](#storyboards)
 * [Xcode Project](#xcode-project)
 * [3rd-party libriaries](#3rd-party-libraries)
 
@@ -453,7 +454,13 @@ This will prevent [possible and sometimes prolific crashes](http://cocoasamurai.
 
 ## Architecture
 
-Objective-C is a highly verbose language and the designpatterns can sometimes lead to very loosely coupled code based on NSNotificationCenter, or very tightly coupled code with massive view controllers caused by under-modularization. Using dot-notation for properties and brackets for messaging can give hints that your code is too loosely coupled and you are violating [the law of Demeter](http://haacked.com/archive/2009/07/14/law-of-demeter-dot-counting.aspx/). You are free to choose the architecture that suits your style and the projects demands, but you are strongly encouraged to strive for high readability and clearity in the code you produce for VG.
+Objective-C is a highly verbose language and the design patterns can sometimes lead to very loosely coupled code based on NSNotificationCenter, or very tightly coupled code with massive view controllers caused by under-modularization. Ideally, keep your architecture as simple and close to regular MVC as possible, but consider refactoring classes once they exceed 400 lines.
+
+Counting dots and brackets can give hints that you are violating [the law of Demeter](http://haacked.com/archive/2009/07/14/law-of-demeter-dot-counting.aspx/). While there aren't any direct correlation between number of dots/brackets and code quality, object oriented code, following [SOLID]() principles are known to produce fewer bugs and more often of higher quality.
+
+## Storyboards
+
+As much of your views as possible should be set up in storyboards, using segues, autolayout, IB_DESIGNABLE and other modern UI technologies available in XCode. Building views in xibs and storyboards eases collaboration between developers and designers, and is prefererred to building views in code.
 
 ## Xcode project
 
@@ -462,6 +469,8 @@ The physical files should be kept in sync with the Xcode project files in order 
 When possible, always turn on "Treat Warnings as Errors" in the target's Build Settings and enable as many [additional warnings](http://boredzo.org/blog/archives/2009-11-07/warnings) as possible. If you need to ignore a specific warning, use [Clang's pragma feature](http://clang.llvm.org/docs/UsersManual.html#controlling-diagnostics-via-pragmas).
 
 ## 3rd-party libraries
+
+You are free to choose the 3rd-party libraries you require, however there are some things that should be mentioned for some of the more popular
 
 ### AFNetworking
 
@@ -485,6 +494,10 @@ NSPredicate *predicate = [NSPredicate predicateWithFormat:@"startDate <= %@ AND 
 ```
 
 The complextiy of the predicate will obviously change based on the number of keys and values to replace. While it is unarguable that the first example will throw compiler errors if the datamodel changes, it should be your responsibility as a developer to test the application for potential errors after a data model change. You should either create a fetchrequest that's stored in the CoreData model-file, or store the predicates with dynamic keypaths inside the model-files (Also know as "Fat Model" or MVVM, see section about Architecture for further details)
+
+### MagicalRecord
+
+MagicalRecord uses some more advanced designpatterns for solving multi-threaded core data code. There are some bugs in the current version, that are not very well documented, so unless you are familiar with the basics of core data, we advice you to stay away from using a 3rd-party library entirely, and rely on using a singlethreaded managedobjectcontext for persistent storage.
 
 ### ReactiveCocoa
 
